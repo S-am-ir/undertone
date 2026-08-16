@@ -1,0 +1,51 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Python environments, caches, and test output
+.venv/
+venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+**/.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# JavaScript / Next.js dependencies and generated output
+node_modules/
+**/node_modules/
+.next/
+**/.next/
+out/
+**/out/
+dist/
+**/dist/
+build/
+**/build/
+*.tsbuildinfo
+
+# Local application state and generated media
+apps/api/data/*
+apps/api/storage/*
+!apps/api/storage/**/.gitkeep
+
+# Logs and local tooling
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Conversation notes and other local-only material
+convo.txt

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Undertone Companion",
+  "version": "0.2.3",
+  "description": "Save garments from any store into your Undertone styling board.",
+  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_title": "Open Undertone capture"
+  }
+}

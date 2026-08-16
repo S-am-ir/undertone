@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f4ef;
+  --foreground: #111827;
+  --muted: #777b88;
+  --card: #fffdfa;
+  --card-border: #ded9d2;
+  --accent: #6a5ed6;
+  --accent-soft: #efeaff;
+  --ink: #111827;
+  --success: #31a36f;
+  --caution: #f0a24a;
+  --danger: #c45163;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-ink: var(--ink);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 1.25rem;
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.meter-track {
+  height: 0.42rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eee7df;
+}
+
+.meter-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #c4a18c, #8d6255);
+  transition: width 0.5s ease;
+}
+
+.meter-track.positive > span {
+  background: linear-gradient(90deg, #9fb8a7, #3d6b5a);
+}
+
+.meter-track.caution > span {
+  background: linear-gradient(90deg, #d5b883, #a67c3a);
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: #f7f4f0;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  border: 1px solid var(--card-border);
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  color: var(--ink);
+  transition: background 0.15s ease;
+}
+
+.btn-ghost:hover {
+  background: var(--accent-soft);
+}
+
+.chip {
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: white;
+  transition: all 0.15s ease;
+}
+
+.chip:hover,
+.chip.active {
+  border-color: var(--accent);
+  color: var(--ink);
+  background: var(--accent-soft);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #efe8e0 25%, #f7f1ea 50%, #efe8e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fade-up 0.35s ease-out both;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .btn-primary,
+  .btn-ghost {
+    padding: 0.6rem 1rem;
+  }
+}

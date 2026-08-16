@@ -1,0 +1,10 @@
+{
+  "name": "undertone",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "api": "cd apps/api && set PYTHONPATH=.&& ..\\..\\.venv\\Scripts\\uvicorn.exe app.main:app --reload --host 127.0.0.1 --port 8000",
+    "web": "cd apps/web && set NEXT_PUBLIC_API_URL=http://127.0.0.1:8000&& npx next dev -p 3000",
+    "test:api": "cd apps/api && set PYTHONPATH=.&& ..\\..\\.venv\\Scripts\\python -m pytest tests -q"
+  }
+}
