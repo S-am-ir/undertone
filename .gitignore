@@ -46,6 +46,3 @@ pnpm-debug.log*
 Thumbs.db
 .idea/
 .vscode/
-
-# Conversation notes and other local-only material
-convo.txt

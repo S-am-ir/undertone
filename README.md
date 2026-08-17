@@ -107,12 +107,24 @@ Minimum live configuration:
 Optional configuration:
 
 - `GROQ_API_KEY` — optional Groq provider. If both providers are configured, the `LLM_PRIMARY` setting controls the text provider; the example defaults to Groq with Gemini fallback.
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` — optional persistent session storage. Without them, the API uses local JSON and disk storage for the demo.
+- `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` (or `SUPABASE_SECRET_KEY`) — optional persistent session and media storage. `SUPABASE_ANON_KEY` is not required for the current server-side demo. Without Supabase credentials, the API uses local JSON and disk storage.
 - `NEXT_PUBLIC_API_URL` — normally `http://localhost:8000` for the Docker setup.
 
 The YouCam and Gemini credentials are the only provider keys needed for the primary live demo path. Never commit `.env` or paste provider keys into source files.
 
-If Supabase is enabled, run `supabase/schema.sql` once in the Supabase SQL editor. The API can fall back to local session JSON and disk storage for a local demo.
+### Optional Supabase persistence
+
+Supabase is not required to run the project locally. If no Supabase credentials are present, the API automatically creates and uses `apps/api/data/` for session JSON and `apps/api/storage/` for uploaded media. No Supabase dashboard setup is needed for that path.
+
+To enable cloud-backed sessions and media:
+
+1. Create or open a Supabase project.
+2. In the Supabase dashboard, open **SQL Editor**, create a new query, paste the complete contents of `supabase/schema.sql`, and click **Run** once.
+3. Copy the project URL into `SUPABASE_URL` in the root `.env` file.
+4. Copy the server-only service-role key into `SUPABASE_SERVICE_ROLE_KEY` (or use `SUPABASE_SECRET_KEY`). The current backend does not require `SUPABASE_ANON_KEY` for this flow.
+5. Restart the API with `docker compose up -d --build`.
+
+The SQL creates the session tables, media buckets, and read policies used by the application. The backend still keeps a local fallback if Supabase is unavailable or a cloud write fails. Never expose or commit the service-role/secret key; it belongs only in the local `.env` or the server’s secret configuration.
 
 From the repository root:
 
@@ -120,6 +132,8 @@ From the repository root:
 cd C:\Users\smeer\Desktop\youcam
 docker compose up --build
 ```
+
+Docker is the recommended judge setup: it starts both the FastAPI service and the production Next.js web app, so a separate Node or Python installation is not required.
 
 Open:
 
@@ -135,6 +149,31 @@ docker compose up -d --build
 
 For faster frontend iteration, run the API normally and start Next.js from `apps/web` with `npm run dev`.
 
+## Judge quick start
+
+The complete interactive experience requires Google Chrome because the shopping companion is a locally loaded Manifest V3 extension. The normal browser studio works without the extension, but the capture-from-retail-page flow does not work in Firefox or another browser.
+
+After cloning the repository:
+
+1. Copy `.env.example` to `.env` in the repository root.
+2. Add `YOUCAM_API_KEY` and at least one language/vision provider key. For the simplest current setup, add `GOOGLE_API_KEY` for Gemini and leave `GROQ_API_KEY` empty. The YouCam key powers the skin/color profile and Apparel VTO; Gemini powers intent, explanations, and garment-image verification.
+3. Optionally add the Supabase values and run `supabase/schema.sql` if persistent sessions and media storage are required. A local JSON/disk fallback is available for a short demo.
+4. Start the stack from the repository root:
+
+   ```powershell
+   docker compose up --build
+   ```
+
+5. Confirm the services are ready:
+
+   - Web app: `http://localhost:3000`
+   - API health: `http://localhost:8000/api/health`
+   - API docs: `http://localhost:8000/docs`
+
+6. Load the companion in Chrome by following the steps in the **Chrome companion** section below.
+
+If the web source or Dockerfile changes, rebuild the web image with `docker compose up -d --build`. If the extension source changes, use **Reload** on its extension card and refresh any retail tabs that were already open.
+
 ## The clean demo path
 
 1. Open the landing page.
@@ -148,16 +187,27 @@ The demo pack uses the canonical local imagery in `apps/api/app/assets/demo/` an
 
 ## Chrome companion
 
-The companion is a locally loadable Manifest V3 extension. It does not contain API keys; it communicates with the local API at `http://localhost:8000`.
+The companion is a locally loadable Chrome Manifest V3 extension. It does not contain API keys; it communicates with the local API at `http://localhost:8000`. It is intentionally not a Chrome Web Store installation for this hackathon demo.
 
-1. Start the API and web app.
-2. Open `chrome://extensions`.
-3. Enable **Developer mode**.
-4. Choose **Load unpacked** and select:
+1. Start Docker and wait for the web app and API health endpoint to respond.
+2. Open Google Chrome. Do not use Firefox or another browser for this part.
+3. Open `chrome://extensions`.
+4. Enable **Developer mode**.
+5. Choose **Load unpacked** and select the extension directory:
    `C:\Users\smeer\Desktop\youcam\apps\capture-extension`
-5. Open Undertone at `http://localhost:3000/app` and keep that tab available.
-6. Open a retail product page, click the floating Undertone control, choose **Grab this look**, crop the garment, and choose **Add to board**.
-7. Choose **Open styling studio**. The crop is added to the active session’s look board.
+6. Open Undertone at `http://localhost:3000/app` and keep that tab available. This creates or resumes the active styling session used by the companion.
+7. Open a retail product page in another Chrome tab. The floating Undertone control should appear on supported HTTP/HTTPS pages.
+8. Click the floating control, choose **Grab this look**, crop the garment, and choose **Add to board**.
+9. Choose **Open styling studio**. The crop should appear in the active session’s look board alongside any local uploads.
+
+The complete live path is:
+
+```text
+Chrome → retail page → floating Undertone control → Grab this look
+→ crop → Add to board → Open styling studio → Read my look
+```
+
+If the floating control does not appear, refresh the retail tab after the extension is loaded. If the extension was reloaded, refresh both the retail tab and the Undertone tab so Chrome gives the content script a fresh extension context. If a crop is not visible in the board, confirm that the styling studio tab was opened at `http://localhost:3000/app` before capturing it.
 
 When extension files change, click **Reload** on the extension card and refresh the retail tab. The extension does not need to be installed again.
 
